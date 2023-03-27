@@ -9,7 +9,7 @@ import {handleValidationErrors, checkAuth} from './utils/index.js'
 import {UserController, PostController} from './controllers/index.js'
 
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect("mongodb+srv://root:root@cluster0.lwwaurf.mongodb.net/?retryWrites=true&w=majority")
   .then(() => console.log("DB ok"))
   .catch((err) => console.log("DB error", err));
 
@@ -47,7 +47,12 @@ app.post('/upload', checkAuth, (req, res) => {
 	});
 })
 
+<<<<<<< HEAD
 app.listen(process.env.PORT || 4444, (err) => {
+=======
+
+app.listen(4444, (err) => {
+>>>>>>> parent of 8f87dc2 (Update index.js)
   if (err) {
     return console.log(err);
   }
