@@ -1,5 +1,4 @@
 import express from "express";
-import multer from "multer";
 import cors from "cors";
 
 import mongoose from "mongoose";
@@ -16,21 +15,11 @@ mongoose
 
 const app = express();
 
-const storage = multer.diskStorage({
-	destination: (_, __, cb) => {
-		cb(null, 'uploads');
-	},
-	filename: (_, file, cb) => {
-		cb(null, file.originalname);
-	},
-});
 
-const upload = multer({ storage });
 
 app.use(express.json());
 app.use(cors());
-// Static folder, перенаправляет на папку с изображениями и ищет подходящее по названию
-app.use('/uploads', express.static('uploads'));
+
 
 // Login
 app.post('/auth/login', loginValidation, handleValidationErrors,  UserController.login)
@@ -48,12 +37,7 @@ app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, Post
 app.delete('/posts/:id', checkAuth, PostController.remove);
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.update);
 
-// upload
-app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-	res.json({
-		url: `/uploads/${req.file.originalname}`
-	});
-})
+
 
 
 app.listen(process.env.PORT || 4444, (err) => {
