@@ -38,7 +38,14 @@ app.delete('/posts/:id', checkAuth, PostController.remove);
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.update);
 
 
-
+app.post('/upload', checkAuth, (req, res) => {
+	const data = req.file.originalname;
+		let buff = new Buffer(data);
+		let base64data = buff.toString('base64');
+	res.json({
+		url: base64data
+	});
+})
 
 app.listen(process.env.PORT || 4444, (err) => {
   if (err) {
