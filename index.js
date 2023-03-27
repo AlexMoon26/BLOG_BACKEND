@@ -1,5 +1,7 @@
 import express from "express";
+import multer from "multer";
 import cors from "cors";
+import fs from "fs";
 
 import mongoose from "mongoose";
 import { registerValidation, loginValidation, postCreateValidation } from "./validations.js";
@@ -15,7 +17,22 @@ mongoose
 
 const app = express();
 
+const storage = multer.diskStorage({
+	destination: (_, __, cb) => {
+		if(!fs.existsSync('uploads')){
+			fs.mkdirSync('uploads');
+		}
+		cb(null, 'uploads');
+	},
+	filename: (_, file, cb) => {
+		cb(null, file.originalname);
+	},
+});
 
+const upload = multer({ storage });
+
+// Static folder, перенаправляет на папку с изображениями и ищет подходящее по названию
+app.use('/uploads', express.static('uploads'));
 
 app.use(express.json());
 app.use(cors());
@@ -38,21 +55,14 @@ app.delete('/posts/:id', checkAuth, PostController.remove);
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.update);
 
 
-app.post('/upload', checkAuth, (req, res) => {
-	const data = req.file.originalname;
-		let buff = new Buffer(data);
-		let base64data = buff.toString('base64');
+// upload
+app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 	res.json({
-		url: base64data
+		url: `/uploads/${req.file.originalname}`
 	});
 })
 
-<<<<<<< HEAD
 app.listen(process.env.PORT || 4444, (err) => {
-=======
-
-app.listen(4444, (err) => {
->>>>>>> parent of 8f87dc2 (Update index.js)
   if (err) {
     return console.log(err);
   }

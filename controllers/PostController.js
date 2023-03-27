@@ -86,9 +86,6 @@ export const remove = async (req, res) => {
 
 export const create = async (req, res) => {
   try {
-    const data = req.body.imageUrl;
-		let buff = new Buffer(data);
-		let base64data = buff.toString('base64');
 		const existingPost = await PostModel.findOne({title: req.body.title})
 		if(existingPost){
 			return res.status(400).json({
@@ -98,7 +95,7 @@ export const create = async (req, res) => {
     const doc = new PostModel({
       title: req.body.title,
       text: req.body.text,
-      imageUrl: base64data,
+      imageUrl: req.body.imageUrl,
       tags: req.body.tags,
       user: req.userId,
     });
