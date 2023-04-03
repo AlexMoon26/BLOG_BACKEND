@@ -56,7 +56,7 @@ app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors,
 
 
 // upload
-app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+app.post('/upload', checkAuth, upload.single('image', 'gif'), (req, res) => {
 	res.json({
 		url: `/uploads/${req.file.originalname}`
 	});
